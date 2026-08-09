@@ -1,9 +1,9 @@
 import "./App.css";
 import { useState } from "react";
 import heroImage from "./assets/Images/food.jpg";
-import food1 from "./assets/Images/food.1.jpg";
+import food1 from "./assets/Images/Food.1.jpg";
 import food2 from "./assets/Images/food.2.jpg";
-import food3 from "./assets/Images/food.3.jpg";
+import food3 from "./assets/Images/Food.3.jpg";
 import aboutImage from "./assets/Images/about.jpg";
 
 import gallery1 from "./assets/Images/gallery1.jpg";
