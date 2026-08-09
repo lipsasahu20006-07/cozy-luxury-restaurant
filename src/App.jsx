@@ -36,7 +36,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/api/reserve", {
+  const response = await fetch("https://cozy-luxury-restaurant-1.onrender.com/api/reserve",  {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
