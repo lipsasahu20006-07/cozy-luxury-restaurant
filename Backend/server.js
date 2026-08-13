@@ -1,9 +1,10 @@
+const adminRoutes = require("./routes/adminRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const reservationRoutes = require("./routes/reservationRoutes");
-
+const orderRoutes = require("./routes/orderRoutes");
 dotenv.config();
 
 const app = express();
@@ -18,6 +19,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/api", reservationRoutes);
+app.use("/api", orderRoutes);
+app.use("/api/admin", adminRoutes);
 
 async function startServer() {
   try {
