@@ -1,0 +1,403 @@
+.admin-menu-page {
+  min-height: 100vh;
+  background: #0d0d0d;
+  color: #f5f1e8;
+  padding: 50px;
+}
+
+/* HEADER */
+
+.admin-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  margin-bottom: 45px;
+}
+
+.dashboard-label {
+  color: #d4af37;
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+
+.admin-menu-header h1 {
+  font-size: 38px;
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.admin-menu-header p:not(.dashboard-label) {
+  color: #aaa;
+  margin: 0;
+}
+
+/* HEADER BUTTONS */
+
+.admin-menu-header-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.back-menu-btn,
+.add-dish-btn {
+  border: none;
+  padding: 13px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.back-menu-btn {
+  background: #1b1b1b;
+  color: #f5f1e8;
+  border: 1px solid #333;
+}
+
+.add-dish-btn {
+  background: #d4af37;
+  color: #111;
+  font-weight: 600;
+}
+
+.back-menu-btn:hover {
+  background: #252525;
+}
+
+.add-dish-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* FORM OVERLAY */
+
+.menu-form-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.menu-form-box {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  background: #151515;
+  border: 1px solid #303030;
+  border-radius: 16px;
+  padding: 35px;
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.6);
+}
+
+.menu-form-box h2 {
+  margin: 0 0 28px;
+  font-size: 28px;
+}
+
+.close-menu-form {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 50%;
+  background: #242424;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close-menu-form:hover {
+  background: #333;
+}
+
+/* FORM */
+
+.menu-form-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-form-box label {
+  color: #ddd;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.menu-form-box input,
+.menu-form-box textarea,
+.menu-form-box select {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0d0d0d;
+  color: #f5f1e8;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 13px 14px;
+  font-size: 14px;
+  outline: none;
+}
+
+.menu-form-box textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.menu-form-box input:focus,
+.menu-form-box textarea:focus,
+.menu-form-box select:focus {
+  border-color: #d4af37;
+}
+
+.menu-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.menu-form-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.availability-checkbox {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin: 15px 0 !important;
+}
+
+.availability-checkbox input {
+  width: auto;
+  accent-color: #d4af37;
+}
+
+.save-dish-btn {
+  margin-top: 10px;
+  border: none;
+  background: #d4af37;
+  color: #111;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.save-dish-btn:hover {
+  opacity: 0.9;
+}
+
+/* MENU GRID */
+
+.admin-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.admin-menu-card {
+  background: #151515;
+  border: 1px solid #292929;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: 0.2s ease;
+}
+
+.admin-menu-card:hover {
+  transform: translateY(-3px);
+  border-color: #444;
+}
+
+.dish-unavailable {
+  opacity: 0.6;
+}
+
+/* IMAGE */
+
+.admin-menu-image,
+.admin-menu-image-placeholder {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-menu-image-placeholder {
+  background: #202020;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 45px;
+}
+
+/* CONTENT */
+
+.admin-menu-content {
+  padding: 22px;
+}
+
+.admin-menu-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.menu-category-badge {
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+.available-badge,
+.unavailable-badge {
+  font-size: 11px;
+  padding: 5px 9px;
+  border-radius: 20px;
+}
+
+.available-badge {
+  background: rgba(70, 160, 90, 0.12);
+  color: #7edb8b;
+}
+
+.unavailable-badge {
+  background: rgba(190, 70, 70, 0.12);
+  color: #ef8585;
+}
+
+.admin-menu-content h2 {
+  font-size: 21px;
+  margin: 0 0 9px;
+}
+
+.admin-menu-content p {
+  color: #999;
+  line-height: 1.5;
+  font-size: 13px;
+  min-height: 40px;
+  margin: 0 0 15px;
+}
+
+.admin-menu-price {
+  color: #d4af37;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* ACTIONS */
+
+.admin-menu-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-menu-actions button {
+  border: none;
+  border-radius: 7px;
+  padding: 9px 11px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.edit-dish-btn {
+  background: #242424;
+  color: #f5f1e8;
+}
+
+.availability-btn {
+  background: #242424;
+  color: #f5f1e8;
+}
+
+.delete-dish-btn {
+  background: rgba(180, 60, 60, 0.15);
+  color: #ef8585;
+}
+
+.edit-dish-btn:hover,
+.availability-btn:hover {
+  background: #333;
+}
+
+.delete-dish-btn:hover {
+  background: rgba(180, 60, 60, 0.28);
+}
+
+/* EMPTY / LOADING */
+
+.menu-admin-message {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.menu-admin-message > div {
+  font-size: 45px;
+  margin-bottom: 15px;
+}
+
+.menu-admin-message h2 {
+  margin: 0 0 8px;
+}
+
+.menu-admin-message p {
+  color: #888;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+  .admin-menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 750px) {
+  .admin-menu-page {
+    padding: 25px;
+  }
+
+  .admin-menu-header {
+    flex-direction: column;
+  }
+
+  .admin-menu-header-buttons {
+    width: 100%;
+  }
+
+  .back-menu-btn,
+  .add-dish-btn {
+    flex: 1;
+  }
+
+  .admin-menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-form-row {
+    grid-template-columns: 1fr;
+  }
+}

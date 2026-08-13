@@ -48,7 +48,7 @@ function AdminOrders() {
   const handleStatusChange = async (id, status) => {
     try {
      const response = await fetch(
-  `http://localhost:5000/api/orders/${id}/status`,
+ `https://cozy-luxury-restaurant-1.onrender.com/api/orders/${id}/status`,
         {
           method: "PATCH",
           headers: {

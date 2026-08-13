@@ -1,3 +1,4 @@
+const menuRoutes = require("./routes/menuRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 
 app.use("/api", reservationRoutes);
 app.use("/api", orderRoutes);
+app.use("/api", menuRoutes);
 app.use("/api/admin", adminRoutes);
 
 async function startServer() {
