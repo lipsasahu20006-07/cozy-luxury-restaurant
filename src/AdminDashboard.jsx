@@ -6,7 +6,10 @@ function AdminDashboard() {
   const navigate = useNavigate();
 
   const [reservations, setReservations] = useState([]);
+  const [orders, setOrders] = useState([]);
+
   const [loading, setLoading] = useState(true);
+  const [ordersLoading, setOrdersLoading] = useState(true);
 
   // Protect dashboard
   useEffect(() => {
@@ -17,7 +20,7 @@ function AdminDashboard() {
     }
   }, [navigate]);
 
-  // Fetch reservations from backend
+  // Fetch reservations
   useEffect(() => {
     const fetchReservations = async () => {
       try {
@@ -42,6 +45,31 @@ function AdminDashboard() {
     fetchReservations();
   }, []);
 
+  // Fetch orders
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch(
+          "https://cozy-luxury-restaurant-1.onrender.com/api/orders"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+
+        setOrders(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setOrdersLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   // Today's date
   const today = new Date().toISOString().split("T")[0];
 
@@ -64,8 +92,22 @@ function AdminDashboard() {
       reservation.status.toLowerCase() === "pending"
   );
 
+  // Today's orders
+  const todaysOrders = orders.filter((order) => {
+    if (!order.createdAt) return false;
+
+    const orderDate = new Date(order.createdAt)
+      .toISOString()
+      .split("T")[0];
+
+    return orderDate === today;
+  });
+
   // Recent reservations
   const recentReservations = reservations.slice(0, 5);
+
+  // Recent orders
+  const recentOrders = orders.slice(0, 5);
 
   return (
     <div className="dashboard">
@@ -79,6 +121,7 @@ function AdminDashboard() {
         </div>
 
         <nav>
+
           <button className="sidebar-link active">
             Dashboard
           </button>
@@ -102,6 +145,7 @@ function AdminDashboard() {
           <button className="sidebar-link">
             Gallery
           </button>
+
         </nav>
 
         <button
@@ -116,6 +160,7 @@ function AdminDashboard() {
 
       </aside>
 
+
       {/* MAIN CONTENT */}
       <main className="dashboard-main">
 
@@ -123,11 +168,13 @@ function AdminDashboard() {
         <header className="dashboard-header">
 
           <div>
+
             <p className="dashboard-label">
               OWNER DASHBOARD
             </p>
 
             <h1>Welcome back 👋</h1>
+
           </div>
 
           <div className="owner-info">
@@ -145,6 +192,7 @@ function AdminDashboard() {
 
         </header>
 
+
         {/* STAT CARDS */}
         <section className="stats-grid">
 
@@ -161,6 +209,7 @@ function AdminDashboard() {
 
           </div>
 
+
           <div className="stat-card">
 
             <div className="stat-icon">
@@ -173,6 +222,7 @@ function AdminDashboard() {
             </div>
 
           </div>
+
 
           <div className="stat-card">
 
@@ -187,6 +237,7 @@ function AdminDashboard() {
 
           </div>
 
+
           <div className="stat-card">
 
             <div className="stat-icon">
@@ -195,12 +246,17 @@ function AdminDashboard() {
 
             <div>
               <p>Today's Orders</p>
-              <h2>0</h2>
+
+              <h2>
+                {todaysOrders.length}
+              </h2>
+
             </div>
 
           </div>
 
         </section>
+
 
         {/* RESERVATIONS */}
         <section className="reservations-section">
@@ -208,11 +264,13 @@ function AdminDashboard() {
           <div className="section-header">
 
             <div>
+
               <p className="dashboard-label">
                 RESERVATIONS
               </p>
 
               <h2>Recent Reservations</h2>
+
             </div>
 
             <button className="view-all-btn">
@@ -221,28 +279,36 @@ function AdminDashboard() {
 
           </div>
 
+
           <div className="reservation-table">
 
             <div className="table-header">
+
               <span>Customer</span>
               <span>Date</span>
               <span>Time</span>
               <span>Guests</span>
               <span>Status</span>
+
             </div>
+
 
             {loading ? (
 
               <div className="empty-reservations">
+
                 <div className="empty-icon">
                   ⏳
                 </div>
 
-                <h3>Loading reservations...</h3>
+                <h3>
+                  Loading reservations...
+                </h3>
 
                 <p>
                   Please wait while we fetch the reservations.
                 </p>
+
               </div>
 
             ) : recentReservations.length === 0 ? (
@@ -253,7 +319,9 @@ function AdminDashboard() {
                   📅
                 </div>
 
-                <h3>No reservations yet</h3>
+                <h3>
+                  No reservations yet
+                </h3>
 
                 <p>
                   Customer reservations will appear here.
@@ -288,6 +356,118 @@ function AdminDashboard() {
 
                   <span>
                     {reservation.status || "Pending"}
+                  </span>
+
+                </div>
+
+              ))
+
+            )}
+
+          </div>
+
+        </section>
+
+
+        {/* ORDERS */}
+        <section className="reservations-section">
+
+          <div className="section-header">
+
+            <div>
+
+              <p className="dashboard-label">
+                ORDERS
+              </p>
+
+              <h2>Recent Orders</h2>
+
+            </div>
+
+          </div>
+
+
+          <div className="reservation-table">
+
+            <div className="table-header">
+
+              <span>Customer</span>
+              <span>Phone</span>
+              <span>Items</span>
+              <span>Total</span>
+              <span>Status</span>
+
+            </div>
+
+
+            {ordersLoading ? (
+
+              <div className="empty-reservations">
+
+                <div className="empty-icon">
+                  ⏳
+                </div>
+
+                <h3>
+                  Loading orders...
+                </h3>
+
+                <p>
+                  Please wait while we fetch the orders.
+                </p>
+
+              </div>
+
+            ) : recentOrders.length === 0 ? (
+
+              <div className="empty-reservations">
+
+                <div className="empty-icon">
+                  🍽️
+                </div>
+
+                <h3>
+                  No orders yet
+                </h3>
+
+                <p>
+                  Customer orders will appear here.
+                </p>
+
+              </div>
+
+            ) : (
+
+              recentOrders.map((order) => (
+
+                <div
+                  className="reservation-row"
+                  key={order._id}
+                >
+
+                  <span>
+                    {order.customerName}
+                  </span>
+
+                  <span>
+                    {order.phone}
+                  </span>
+
+                  <span>
+                    {order.items
+                      ?.map(
+                        (item) =>
+                          `${item.name} × ${item.quantity}`
+                      )
+                      .join(", ")}
+                  </span>
+
+                  <span>
+                    ₹{order.totalAmount}
+                  </span>
+
+                  <span>
+                    {order.status || "Pending"}
                   </span>
 
                 </div>
