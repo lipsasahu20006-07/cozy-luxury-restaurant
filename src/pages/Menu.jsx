@@ -1,8 +1,11 @@
 import "./Menu.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Menu() {
   const [cart, setCart] = useState([]);
+
+  const [menuItems, setMenuItems] = useState([]);
+  const [loadingMenu, setLoadingMenu] = useState(true);
 
   const [showOrderForm, setShowOrderForm] = useState(false);
 
@@ -13,8 +16,39 @@ function Menu() {
     instructions: "",
   });
 
+  // FETCH MENU FROM DATABASE
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const response = await fetch(
+          "https://cozy-luxury-restaurant-1.onrender.com/api/menu"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch menu");
+        }
+
+        const data = await response.json();
+
+        // Show ALL dishes, including unavailable dishes
+        setMenuItems(data);
+      } catch (error) {
+        console.error("Menu fetch error:", error);
+      } finally {
+        setLoadingMenu(false);
+      }
+    };
+
+    fetchMenu();
+  }, []);
+
   // ADD ITEM TO CART
   const addToOrder = (item) => {
+    // Don't allow unavailable dishes
+    if (item.available === false) {
+      return;
+    }
+
     setCart((currentCart) => {
       const existingItem = currentCart.find(
         (cartItem) => cartItem.name === item.name
@@ -34,7 +68,8 @@ function Menu() {
       return [
         ...currentCart,
         {
-          ...item,
+          name: item.name,
+          price: item.price,
           quantity: 1,
         },
       ];
@@ -89,7 +124,11 @@ function Menu() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
 
-    if (!orderData.name || !orderData.phone || !orderData.address) {
+    if (
+      !orderData.name ||
+      !orderData.phone ||
+      !orderData.address
+    ) {
       alert(
         "Please fill in your name, phone number and delivery address."
       );
@@ -149,10 +188,19 @@ function Menu() {
     }
   };
 
+  // MENU CATEGORIES
+  const categories = [
+    "Starters",
+    "Main Course",
+    "Desserts",
+    "Beverages",
+  ];
+
   return (
     <div className="menu-page">
 
       {/* ORDER BOX */}
+
       {cart.length > 0 && (
         <div className="order-box">
 
@@ -211,10 +259,11 @@ function Menu() {
 
           </div>
 
-          {/* ORDER BUTTON */}
           <button
             className="place-order-btn"
-            onClick={() => setShowOrderForm(true)}
+            onClick={() =>
+              setShowOrderForm(true)
+            }
           >
             Place Order
           </button>
@@ -224,6 +273,7 @@ function Menu() {
 
 
       {/* MENU HEADER */}
+
       <div className="menu-header">
 
         <p className="menu-label">
@@ -241,218 +291,131 @@ function Menu() {
       </div>
 
 
-      {/* STARTERS */}
+      {/* LOADING */}
 
-      <section className="menu-category">
+      {loadingMenu ? (
 
-        <h2>
-          Starters
-        </h2>
+        <div className="menu-category">
 
+          <h2>
+            Loading Menu...
+          </h2>
 
-        <div className="menu-item">
-
-          <div>
-            <h3>
-              Chicken Tikka
-            </h3>
-
-            <p>
-              Tender chicken marinated in aromatic spices.
-            </p>
-          </div>
-
-          <div>
-
-            <p className="menu-price">
-              ₹299
-            </p>
-
-            <button
-              className="add-order-btn"
-              onClick={() =>
-                addToOrder({
-                  name: "Chicken Tikka",
-                  price: 299,
-                })
-              }
-            >
-              Add to Order
-            </button>
-
-          </div>
+          <p>
+            Please wait while we prepare our menu.
+          </p>
 
         </div>
 
+      ) : menuItems.length === 0 ? (
 
-        <div className="menu-item">
+        <div className="menu-category">
 
-          <div>
-            <h3>
-              Paneer Tikka
-            </h3>
+          <h2>
+            Menu Coming Soon
+          </h2>
 
-            <p>
-              Grilled cottage cheese with Indian spices.
-            </p>
-          </div>
-
-          <div>
-
-            <p className="menu-price">
-              ₹249
-            </p>
-
-            <button
-              className="add-order-btn"
-              onClick={() =>
-                addToOrder({
-                  name: "Paneer Tikka",
-                  price: 249,
-                })
-              }
-            >
-              Add to Order
-            </button>
-
-          </div>
+          <p>
+            Our delicious dishes will be available shortly.
+          </p>
 
         </div>
 
-      </section>
+      ) : (
 
+        /* MENU CATEGORIES */
 
-      {/* MAIN COURSE */}
+        categories.map((category) => {
 
-      <section className="menu-category">
+          const categoryItems = menuItems.filter(
+            (item) => item.category === category
+          );
 
-        <h2>
-          Main Course
-        </h2>
+          if (categoryItems.length === 0) {
+            return null;
+          }
 
-
-        <div className="menu-item">
-
-          <div>
-
-            <h3>
-              Grilled Steak
-            </h3>
-
-            <p>
-              Juicy grilled steak served with our signature sides.
-            </p>
-
-          </div>
-
-          <div>
-
-            <p className="menu-price">
-              ₹599
-            </p>
-
-            <button
-              className="add-order-btn"
-              onClick={() =>
-                addToOrder({
-                  name: "Grilled Steak",
-                  price: 599,
-                })
-              }
+          return (
+            <section
+              className="menu-category"
+              key={category}
             >
-              Add to Order
-            </button>
 
-          </div>
+              <h2>
+                {category}
+              </h2>
 
-        </div>
+              {categoryItems.map((item) => {
 
+                const unavailable =
+                  item.available === false;
 
-        <div className="menu-item">
+                return (
+                  <div
+                    className={`menu-item ${
+                      unavailable
+                        ? "menu-item-unavailable"
+                        : ""
+                    }`}
+                    key={item._id}
+                  >
 
-          <div>
+                    <div>
 
-            <h3>
-              Creamy Pasta
-            </h3>
+                      <h3>
+                        {item.name}
+                      </h3>
 
-            <p>
-              Rich creamy pasta finished with herbs and parmesan.
-            </p>
+                      <p>
+                        {item.description}
+                      </p>
 
-          </div>
+                      {unavailable && (
+                        <span className="unavailable-label">
+                          Currently Unavailable
+                        </span>
+                      )}
 
-          <div>
+                    </div>
 
-            <p className="menu-price">
-              ₹399
-            </p>
+                    <div>
 
-            <button
-              className="add-order-btn"
-              onClick={() =>
-                addToOrder({
-                  name: "Creamy Pasta",
-                  price: 399,
-                })
-              }
-            >
-              Add to Order
-            </button>
+                      <p className="menu-price">
+                        ₹{item.price}
+                      </p>
 
-          </div>
+                      {unavailable ? (
 
-        </div>
+                        <button
+                          className="add-order-btn unavailable-btn"
+                          disabled
+                        >
+                          Unavailable
+                        </button>
 
-      </section>
+                      ) : (
 
+                        <button
+                          className="add-order-btn"
+                          onClick={() =>
+                            addToOrder(item)
+                          }
+                        >
+                          Add to Order
+                        </button>
 
-      {/* DESSERTS */}
+                      )}
 
-      <section className="menu-category">
+                    </div>
 
-        <h2>
-          Desserts
-        </h2>
+                  </div>
+                );
+              })}
 
-
-        <div className="menu-item">
-
-          <div>
-
-            <h3>
-              Chocolate Dessert
-            </h3>
-
-            <p>
-              Decadent chocolate dessert for the perfect ending.
-            </p>
-
-          </div>
-
-          <div>
-
-            <p className="menu-price">
-              ₹299
-            </p>
-
-            <button
-              className="add-order-btn"
-              onClick={() =>
-                addToOrder({
-                  name: "Chocolate Dessert",
-                  price: 299,
-                })
-              }
-            >
-              Add to Order
-            </button>
-
-          </div>
-
-        </div>
-
-      </section>
+            </section>
+          );
+        })
+      )}
 
 
       {/* ORDER FORM */}
