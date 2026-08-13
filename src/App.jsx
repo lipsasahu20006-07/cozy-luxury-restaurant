@@ -1,8 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import Home from "./pages/Home";
 import AdminLogin from "./AdminLogin";
 import Menu from "./pages/Menu";
 import Admin from "./Admin";
+import AdminOrders from "./AdminOrders";
+
 
 function ProtectedAdmin() {
   const isLoggedIn = localStorage.getItem("adminLoggedIn");
@@ -14,22 +17,43 @@ function ProtectedAdmin() {
   return <Admin />;
 }
 
+
 function App() {
   return (
     <BrowserRouter>
+
       <Routes>
 
-  <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-  <Route path="/menu" element={<Menu />} />
+        <Route
+          path="/menu"
+          element={<Menu />}
+        />
 
-  <Route path="/admin-login" element={<AdminLogin />} />
+        <Route
+          path="/admin-login"
+          element={<AdminLogin />}
+        />
 
-  <Route path="/admin" element={<ProtectedAdmin />} />
+        <Route
+          path="/admin"
+          element={<ProtectedAdmin />}
+        />
 
-</Routes>
+        <Route
+          path="/admin/orders"
+          element={<AdminOrders />}
+        />
+
+      </Routes>
+
     </BrowserRouter>
   );
 }
+
 
 export default App;

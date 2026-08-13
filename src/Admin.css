@@ -336,3 +336,23 @@
     padding: 16px;
   }
 }
+.admin-header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.orders-btn {
+  background: #d4af37;
+  color: #111;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.orders-btn:hover {
+  background: #e6c65c;
+}

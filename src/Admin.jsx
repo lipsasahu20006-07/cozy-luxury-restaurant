@@ -13,7 +13,9 @@ function Admin() {
   const fetchReservations = () => {
     setLoading(true);
 
-    fetch("http://localhost:5000/api/admin/reservations")
+    fetch(
+      "https://cozy-luxury-restaurant-1.onrender.com/api/admin/reservations"
+    )
       .then((response) => response.json())
       .then((data) => {
         setReservations(data);
@@ -69,7 +71,7 @@ function Admin() {
   const handleStatusChange = async (id, status) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/reservations/${id}/status`,
+        `https://cozy-luxury-restaurant-1.onrender.com/api/admin/reservations/${id}/status`,
         {
           method: "PATCH",
           headers: {
@@ -108,7 +110,7 @@ function Admin() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/reservations/${id}`,
+        `https://cozy-luxury-restaurant-1.onrender.com/api/admin/reservations/${id}`,
         {
           method: "DELETE",
         }
@@ -146,11 +148,26 @@ function Admin() {
           <p>Restaurant Reservations</p>
         </div>
 
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="admin-header-actions">
+
+          <button
+            className="orders-btn"
+            onClick={() => navigate("/admin/orders")}
+          >
+            🍽️ Orders
+          </button>
+
+          <button
+            className="logout-btn"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+
+        </div>
 
       </div>
+
 
       {/* Statistics */}
       <div className="admin-stats">
@@ -177,6 +194,7 @@ function Admin() {
 
       </div>
 
+
       {/* Search and Refresh */}
       <div className="admin-actions">
 
@@ -186,7 +204,9 @@ function Admin() {
             type="text"
             placeholder="Search by name, email or phone..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) =>
+              setSearchTerm(e.target.value)
+            }
           />
 
         </div>
@@ -199,6 +219,7 @@ function Admin() {
         </button>
 
       </div>
+
 
       {/* Reservation Table */}
       {loading ? (
@@ -235,84 +256,93 @@ function Admin() {
 
             <tbody>
 
-              {filteredReservations.map((reservation) => (
+              {filteredReservations.map(
+                (reservation) => (
 
-                <tr key={reservation._id}>
+                  <tr key={reservation._id}>
 
-                  <td>
-                    {reservation.name}
-                  </td>
+                    <td>
+                      {reservation.name}
+                    </td>
 
-                  <td>
-                    {reservation.email}
-                  </td>
+                    <td>
+                      {reservation.email}
+                    </td>
 
-                  <td>
-                    {reservation.phone}
-                  </td>
+                    <td>
+                      {reservation.phone}
+                    </td>
 
-                  <td>
-                    {reservation.date}
-                  </td>
+                    <td>
+                      {reservation.date}
+                    </td>
 
-                  <td>
-                    {reservation.time}
-                  </td>
+                    <td>
+                      {reservation.time}
+                    </td>
 
-                  <td>
-                    {reservation.guests || 0}
-                  </td>
+                    <td>
+                      {reservation.guests || 0}
+                    </td>
 
-                  <td>
+                    <td>
 
-                    <select
-                      value={reservation.status || "Pending"}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          reservation._id,
-                          e.target.value
-                        )
-                      }
-                    >
-                      <option value="Pending">
-                        Pending
-                      </option>
+                      <select
+                        value={
+                          reservation.status ||
+                          "Pending"
+                        }
+                        onChange={(e) =>
+                          handleStatusChange(
+                            reservation._id,
+                            e.target.value
+                          )
+                        }
+                      >
 
-                      <option value="Confirmed">
-                        Confirmed
-                      </option>
+                        <option value="Pending">
+                          Pending
+                        </option>
 
-                      <option value="Cancelled">
-                        Cancelled
-                      </option>
-                    </select>
+                        <option value="Confirmed">
+                          Confirmed
+                        </option>
 
-                  </td>
+                        <option value="Cancelled">
+                          Cancelled
+                        </option>
 
-                  <td>
-                    {reservation.createdAt
-                      ? new Date(
-                          reservation.createdAt
-                        ).toLocaleDateString()
-                      : "-"}
-                  </td>
+                      </select>
 
-                  <td>
+                    </td>
 
-                    <button
-                      className="delete-btn"
-                      onClick={() =>
-                        handleDelete(reservation._id)
-                      }
-                    >
-                      Delete
-                    </button>
+                    <td>
+                      {reservation.createdAt
+                        ? new Date(
+                            reservation.createdAt
+                          ).toLocaleDateString()
+                        : "-"}
+                    </td>
 
-                  </td>
+                    <td>
 
-                </tr>
+                      <button
+                        className="delete-btn"
+                        onClick={() =>
+                          handleDelete(
+                            reservation._id
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
 
-              ))}
+                    </td>
+
+                  </tr>
+
+                )
+              )}
 
             </tbody>
 

@@ -38,6 +38,7 @@ router.post("/orders", async (req, res) => {
   }
 });
 
+
 // GET ALL ORDERS
 router.get("/orders", async (req, res) => {
   try {
@@ -54,5 +55,50 @@ router.get("/orders", async (req, res) => {
     });
   }
 });
+
+
+// UPDATE ORDER STATUS
+router.patch("/orders/:id/status", async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    const allowedStatuses = [
+      "Pending",
+      "Confirmed",
+      "Preparing",
+      "Out for Delivery",
+      "Delivered",
+      "Cancelled",
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid order status.",
+      });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({
+        message: "Order not found.",
+      });
+    }
+
+    res.json(updatedOrder);
+
+  } catch (error) {
+    console.error("Status update error:", error);
+
+    res.status(500).json({
+      message: "Failed to update order status.",
+    });
+  }
+});
+
 
 module.exports = router;
