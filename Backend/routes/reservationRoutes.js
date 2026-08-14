@@ -3,31 +3,54 @@ const router = express.Router();
 const Reservation = require("../models/Reservation");
 const nodemailer = require("nodemailer");
 
+// ===============================
 // EMAIL SETUP
+// ===============================
+
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
 
+// Check email connection when server starts
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("========== EMAIL CONFIGURATION FAILED ==========");
+    console.error(error.message);
+  } else {
+    console.log("========== EMAIL CONFIGURATION SUCCESS ==========");
+    console.log("Gmail is ready to send emails.");
+  }
+});
+
+// ===============================
 // CREATE RESERVATION
+// ===============================
+
 router.post("/reserve", async (req, res) => {
-  console.log("========== REQUEST RECEIVED ==========");
+  console.log("========== RESERVATION REQUEST ==========");
   console.log(req.body);
 
   try {
     // Save reservation
     const reservation = new Reservation(req.body);
 
-    console.log("Saving to MongoDB...");
+    console.log("Saving reservation to MongoDB...");
 
     await reservation.save();
 
-    console.log("Saved!");
+    console.log("Reservation saved successfully!");
+    console.log("Reservation ID:", reservation._id);
 
-    // Send confirmation email
+    // ===============================
+    // EMAIL
+    // ===============================
+
     const mailOptions = {
       from: `"Local Restro Cafe" <${process.env.EMAIL_USER}>`,
       to: reservation.email,
@@ -38,14 +61,13 @@ router.post("/reserve", async (req, res) => {
           font-family: Arial, sans-serif;
           max-width: 600px;
           margin: auto;
-          padding: 30px;
           background: #f8f6f1;
           color: #222;
         ">
 
           <div style="
             background: #111;
-            padding: 25px;
+            padding: 30px;
             text-align: center;
           ">
             <h1 style="
@@ -56,19 +78,14 @@ router.post("/reserve", async (req, res) => {
               LOCAL RESTRO CAFE
             </h1>
 
-            <p style="
-              color: #ffffff;
-              margin-bottom: 0;
-            ">
+            <p style="color: white;">
               Palasuni, Bhubaneswar
             </p>
           </div>
 
-          <div style="padding: 25px 10px;">
+          <div style="padding: 30px;">
 
-            <h2 style="color: #222;">
-              Your Table is Reserved ✨
-            </h2>
+            <h2>Your Table is Reserved ✨</h2>
 
             <p>
               Hi <strong>${reservation.name}</strong>,
@@ -77,20 +94,17 @@ router.post("/reserve", async (req, res) => {
             <p>
               Thank you for choosing
               <strong>Local Restro Cafe</strong>.
-              We're delighted to confirm that your table has
-              been successfully reserved.
+              We're delighted to confirm your table reservation.
             </p>
 
             <div style="
-              background: #ffffff;
+              background: white;
               padding: 20px;
               margin: 25px 0;
               border-left: 4px solid #d4af37;
             ">
 
-              <h3 style="margin-top: 0;">
-                Reservation Details
-              </h3>
+              <h3>Reservation Details</h3>
 
               <p>
                 📅 <strong>Date:</strong>
@@ -115,7 +129,7 @@ router.post("/reserve", async (req, res) => {
             </div>
 
             <p>
-              Your table will be reserved for the date and time
+              Your table has been reserved for the date and time
               mentioned above.
             </p>
 
@@ -147,9 +161,9 @@ router.post("/reserve", async (req, res) => {
 
           <div style="
             background: #111;
-            padding: 18px;
+            padding: 20px;
             text-align: center;
-            color: #ffffff;
+            color: white;
             font-size: 13px;
           ">
             Local Restro Cafe<br />
@@ -160,34 +174,43 @@ router.post("/reserve", async (req, res) => {
       `,
     };
 
+    // ===============================
+    // RESPOND TO CUSTOMER FIRST
+    // ===============================
+
+    res.status(201).json({
+      message: "Reservation saved successfully!",
+      reservation,
+    });
+
+    // ===============================
+    // SEND EMAIL
+    // ===============================
+
     console.log("Trying to send confirmation email...");
-console.log("Sending to:", reservation.email);
+    console.log("Sending email to:", reservation.email);
 
-res.status(201).json({
-  message: "Reservation saved successfully!",
-  reservation,
-});
-
-// Send email after responding to the customer
-transporter
-  .sendMail(mailOptions)
-  .then((info) => {
-    console.log("========== EMAIL SENT ==========");
-    console.log("Message ID:", info.messageId);
-    console.log("To:", reservation.email);
-  })
-  .catch((emailError) => {
-    console.log("========== EMAIL FAILED ==========");
-    console.error(emailError);
-  });
+    transporter
+      .sendMail(mailOptions)
+      .then((info) => {
+        console.log("========== EMAIL SENT ==========");
+        console.log("Message ID:", info.messageId);
+        console.log("Email sent to:", reservation.email);
+      })
+      .catch((emailError) => {
+        console.error("========== EMAIL FAILED ==========");
+        console.error(emailError);
+      });
 
   } catch (err) {
-    console.error("ERROR:");
+    console.error("========== RESERVATION ERROR ==========");
     console.error(err);
 
-    res.status(500).json({
-      message: err.message,
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        message: err.message,
+      });
+    }
   }
 });
 
