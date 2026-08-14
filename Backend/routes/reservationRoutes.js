@@ -163,20 +163,20 @@ router.post("/reserve", async (req, res) => {
     console.log("Trying to send confirmation email...");
 console.log("Sending to:", reservation.email);
 
-try {
-  await transporter.sendMail(mailOptions);
-  console.log("Confirmation email sent successfully!");
-} catch (emailError) {
-  console.error("Email sending failed:");
-  console.error(emailError);
+res.status(201).json({
+  message: "Reservation saved successfully!",
+  reservation,
+});
 
-      console.error("Email sending failed:", emailError);
-    }
-
-    res.status(201).json({
-      message: "Reservation saved successfully!",
-      reservation,
-    });
+// Send email after responding to the customer
+transporter
+  .sendMail(mailOptions)
+  .then(() => {
+    console.log("Confirmation email sent successfully!");
+  })
+  .catch((emailError) => {
+    console.error("Email sending failed:", emailError);
+});
 
   } catch (err) {
     console.error("ERROR:");
