@@ -171,12 +171,15 @@ res.status(201).json({
 // Send email after responding to the customer
 transporter
   .sendMail(mailOptions)
-  .then(() => {
-    console.log("Confirmation email sent successfully!");
+  .then((info) => {
+    console.log("========== EMAIL SENT ==========");
+    console.log("Message ID:", info.messageId);
+    console.log("To:", reservation.email);
   })
   .catch((emailError) => {
-    console.error("Email sending failed:", emailError);
-});
+    console.log("========== EMAIL FAILED ==========");
+    console.error(emailError);
+  });
 
   } catch (err) {
     console.error("ERROR:");
