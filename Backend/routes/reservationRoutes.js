@@ -178,29 +178,29 @@ router.post("/reserve", async (req, res) => {
     // RESPOND TO CUSTOMER FIRST
     // ===============================
 
-    res.status(201).json({
-      message: "Reservation saved successfully!",
-      reservation,
-    });
+   try {
+  console.log("========== TRYING EMAIL ==========");
+  console.log("Sending to:", reservation.email);
 
-    // ===============================
-    // SEND EMAIL
-    // ===============================
+  const info = await transporter.sendMail(mailOptions);
 
-    console.log("Trying to send confirmation email...");
-    console.log("Sending email to:", reservation.email);
+  console.log("========== EMAIL SENT ==========");
+  console.log("Message ID:", info.messageId);
 
-    transporter
-      .sendMail(mailOptions)
-      .then((info) => {
-        console.log("========== EMAIL SENT ==========");
-        console.log("Message ID:", info.messageId);
-        console.log("Email sent to:", reservation.email);
-      })
-      .catch((emailError) => {
-        console.error("========== EMAIL FAILED ==========");
-        console.error(emailError);
-      });
+} catch (emailError) {
+  console.error("========== EMAIL FAILED ==========");
+  console.error("Error message:", emailError.message);
+
+  return res.status(500).json({
+    message: "Reservation saved, but email could not be sent.",
+    emailError: emailError.message,
+  });
+}
+
+res.status(201).json({
+  message: "Reservation saved successfully and confirmation email sent!",
+  reservation,
+});
 
   } catch (err) {
     console.error("========== RESERVATION ERROR ==========");
