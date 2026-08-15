@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const Reservation = require("../models/Reservation");
-const { Resend } = require("resend");
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ===============================
 // CREATE RESERVATION
@@ -28,158 +25,13 @@ router.post("/reserve", async (req, res) => {
     console.log("Reservation ID:", reservation._id);
 
     // ===============================
-    // RESPOND TO CUSTOMER FIRST
+    // RESPOND TO CUSTOMER
     // ===============================
 
     res.status(201).json({
       message: "Reservation saved successfully!",
       reservation,
     });
-
-    // ===============================
-    // SEND EMAIL USING RESEND
-    // ===============================
-
-    try {
-      console.log("========== TRYING EMAIL ==========");
-      console.log("Sending to:", reservation.email);
-
-      const { data, error } = await resend.emails.send({
-        from: "Local Restro Cafe <onboarding@resend.dev>",
-        to: [reservation.email],
-        subject: "Your Table is Reserved at Local Restro Cafe ✨",
-
-        html: `
-          <div style="
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: auto;
-            background: #f8f6f1;
-            color: #222;
-          ">
-
-            <div style="
-              background: #111;
-              padding: 30px;
-              text-align: center;
-            ">
-              <h1 style="
-                color: #d4af37;
-                margin: 0;
-                letter-spacing: 2px;
-              ">
-                LOCAL RESTRO CAFE
-              </h1>
-
-              <p style="color: white;">
-                Palasuni, Bhubaneswar
-              </p>
-            </div>
-
-            <div style="padding: 30px;">
-
-              <h2>Your Table is Reserved ✨</h2>
-
-              <p>
-                Hi <strong>${reservation.name}</strong>,
-              </p>
-
-              <p>
-                Thank you for choosing
-                <strong>Local Restro Cafe</strong>.
-                We're delighted to confirm your table reservation.
-              </p>
-
-              <div style="
-                background: white;
-                padding: 20px;
-                margin: 25px 0;
-                border-left: 4px solid #d4af37;
-              ">
-
-                <h3>Reservation Details</h3>
-
-                <p>
-                  📅 <strong>Date:</strong>
-                  ${reservation.date}
-                </p>
-
-                <p>
-                  🕐 <strong>Time:</strong>
-                  ${reservation.time}
-                </p>
-
-                <p>
-                  👥 <strong>Guests:</strong>
-                  ${reservation.guests}
-                </p>
-
-                <p>
-                  👤 <strong>Name:</strong>
-                  ${reservation.name}
-                </p>
-
-              </div>
-
-              <p>
-                Your table has been reserved for the date and time
-                mentioned above.
-              </p>
-
-              <p>
-                We look forward to welcoming you and making your
-                visit a memorable one. ✨
-              </p>
-
-              <p>
-                If you need to make any changes to your reservation,
-                please contact us before your scheduled time.
-              </p>
-
-              <p style="
-                margin-top: 30px;
-                font-weight: bold;
-              ">
-                See you soon at Local Restro Cafe!
-              </p>
-
-              <p style="
-                color: #777;
-                font-style: italic;
-              ">
-                Good food. Good moments. Great memories.
-              </p>
-
-            </div>
-
-            <div style="
-              background: #111;
-              padding: 20px;
-              text-align: center;
-              color: white;
-              font-size: 13px;
-            ">
-              Local Restro Cafe<br />
-              Palasuni, Bhubaneswar
-            </div>
-
-          </div>
-        `,
-      });
-
-      if (error) {
-        console.error("========== EMAIL FAILED ==========");
-        console.error(error);
-        return;
-      }
-
-      console.log("========== EMAIL SENT ==========");
-      console.log("Email ID:", data?.id);
-
-    } catch (emailError) {
-      console.error("========== EMAIL FAILED ==========");
-      console.error("Error message:", emailError.message);
-    }
 
   } catch (err) {
     console.error("========== RESERVATION ERROR ==========");

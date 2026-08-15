@@ -8,14 +8,28 @@ function Admin() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
+    useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+
+    if (!token) {
+      navigate("/admin-login");
+    }
+  }, [navigate]);
 
   // Fetch reservations
   const fetchReservations = () => {
     setLoading(true);
 
-    fetch(
-      "https://cozy-luxury-restaurant-1.onrender.com/api/admin/reservations"
-    )
+    const token = localStorage.getItem("adminToken");
+
+fetch(
+  "https://cozy-luxury-restaurant-1.onrender.com/api/admin/reservations",
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+)
       .then((response) => response.json())
       .then((data) => {
         setReservations(data);
@@ -75,8 +89,9 @@ function Admin() {
         {
           method: "PATCH",
           headers: {
-            "Content-Type": "application/json",
-          },
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+},
           body: JSON.stringify({ status }),
         }
       );
@@ -112,7 +127,10 @@ function Admin() {
       const response = await fetch(
         `https://cozy-luxury-restaurant-1.onrender.com/api/admin/reservations/${id}`,
         {
-          method: "DELETE",
+         method: "DELETE",
+headers: {
+  Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+},
         }
       );
 
@@ -133,8 +151,8 @@ function Admin() {
 
   // Logout
   const handleLogout = () => {
-    localStorage.removeItem("adminLoggedIn");
-    navigate("/admin-login");
+   localStorage.removeItem("adminToken");
+navigate("/admin-login");
   };
 
   return (
@@ -156,6 +174,13 @@ function Admin() {
           >
             🍽️ Orders
           </button>
+
+          <button
+  className="orders-btn"
+  onClick={() => navigate("/admin/menu")}
+>
+  🥘 Manage Menu
+</button>
 
           <button
             className="logout-btn"

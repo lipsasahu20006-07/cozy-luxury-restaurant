@@ -7,14 +7,14 @@ import Admin from "./Admin";
 import AdminOrders from "./AdminOrders";
 import AdminMenu from "./AdminMenu";
 
-function ProtectedAdmin() {
-  const isLoggedIn = localStorage.getItem("adminLoggedIn");
+function ProtectedAdmin({ children }) {
+  const token = localStorage.getItem("adminToken");
 
-  if (!isLoggedIn) {
+  if (!token) {
     return <Navigate to="/admin-login" replace />;
   }
 
-  return <Admin />;
+  return children;
 }
 
 function App() {
@@ -47,7 +47,11 @@ function App() {
 
         <Route
           path="/admin"
-          element={<ProtectedAdmin />}
+          element={
+            <ProtectedAdmin>
+              <Admin />
+            </ProtectedAdmin>
+          }
         />
 
 
@@ -55,7 +59,11 @@ function App() {
 
         <Route
           path="/admin/orders"
-          element={<AdminOrders />}
+          element={
+            <ProtectedAdmin>
+              <AdminOrders />
+            </ProtectedAdmin>
+          }
         />
 
 
@@ -63,7 +71,11 @@ function App() {
 
         <Route
           path="/admin/menu"
-          element={<AdminMenu />}
+          element={
+            <ProtectedAdmin>
+              <AdminMenu />
+            </ProtectedAdmin>
+          }
         />
 
       </Routes>

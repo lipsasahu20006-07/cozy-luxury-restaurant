@@ -5,7 +5,9 @@
   padding: 50px;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 
 .admin-menu-header {
   display: flex;
@@ -34,7 +36,9 @@
   margin: 0;
 }
 
-/* HEADER BUTTONS */
+/* =========================
+   HEADER BUTTONS
+========================= */
 
 .admin-menu-header-buttons {
   display: flex;
@@ -44,16 +48,15 @@
 
 .back-menu-btn,
 .add-dish-btn {
-  border: none;
-  padding: 13px 20px;
   border-radius: 8px;
+  padding: 13px 20px;
   cursor: pointer;
   font-size: 14px;
-  transition: 0.2s ease;
+  transition: 0.25s ease;
 }
 
 .back-menu-btn {
-  background: #1b1b1b;
+  background: #151515;
   color: #f5f1e8;
   border: 1px solid #333;
 }
@@ -61,24 +64,29 @@
 .add-dish-btn {
   background: #d4af37;
   color: #111;
+  border: 1px solid #d4af37;
   font-weight: 600;
 }
 
 .back-menu-btn:hover {
-  background: #252525;
+  background: #242424;
+  border-color: #555;
 }
 
 .add-dish-btn:hover {
-  transform: translateY(-1px);
-  opacity: 0.9;
+  background: #e6c65c;
+  transform: translateY(-2px);
 }
 
-/* FORM OVERLAY */
+/* =========================
+   FORM OVERLAY
+========================= */
 
 .menu-form-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.78);
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,15 +100,16 @@
   width: 100%;
   max-width: 620px;
   background: #151515;
-  border: 1px solid #303030;
+  border: 1px solid #333;
   border-radius: 16px;
   padding: 35px;
-  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.7);
 }
 
 .menu-form-box h2 {
   margin: 0 0 28px;
   font-size: 28px;
+  color: #f5f1e8;
 }
 
 .close-menu-form {
@@ -115,13 +124,16 @@
   color: #fff;
   font-size: 24px;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .close-menu-form:hover {
   background: #333;
 }
 
-/* FORM */
+/* =========================
+   FORM
+========================= */
 
 .menu-form-box form {
   display: flex;
@@ -147,6 +159,7 @@
   padding: 13px 14px;
   font-size: 14px;
   outline: none;
+  transition: 0.2s ease;
 }
 
 .menu-form-box textarea {
@@ -158,6 +171,7 @@
 .menu-form-box textarea:focus,
 .menu-form-box select:focus {
   border-color: #d4af37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.08);
 }
 
 .menu-form-row {
@@ -195,13 +209,17 @@
   font-weight: 700;
   cursor: pointer;
   font-size: 15px;
+  transition: 0.25s ease;
 }
 
 .save-dish-btn:hover {
-  opacity: 0.9;
+  background: #e6c65c;
+  transform: translateY(-1px);
 }
 
-/* MENU GRID */
+/* =========================
+   MENU GRID
+========================= */
 
 .admin-menu-grid {
   display: grid;
@@ -214,19 +232,22 @@
   border: 1px solid #292929;
   border-radius: 14px;
   overflow: hidden;
-  transition: 0.2s ease;
+  transition: 0.25s ease;
 }
 
 .admin-menu-card:hover {
-  transform: translateY(-3px);
-  border-color: #444;
+  transform: translateY(-4px);
+  border-color: #555;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
 }
 
 .dish-unavailable {
   opacity: 0.6;
 }
 
-/* IMAGE */
+/* =========================
+   IMAGE
+========================= */
 
 .admin-menu-image,
 .admin-menu-image-placeholder {
@@ -244,7 +265,9 @@
   font-size: 45px;
 }
 
-/* CONTENT */
+/* =========================
+   CONTENT
+========================= */
 
 .admin-menu-content {
   padding: 22px;
@@ -304,7 +327,9 @@
   margin-bottom: 18px;
 }
 
-/* ACTIONS */
+/* =========================
+   ACTIONS
+========================= */
 
 .admin-menu-actions {
   display: flex;
@@ -317,13 +342,10 @@
   padding: 9px 11px;
   cursor: pointer;
   font-size: 12px;
+  transition: 0.2s ease;
 }
 
-.edit-dish-btn {
-  background: #242424;
-  color: #f5f1e8;
-}
-
+.edit-dish-btn,
 .availability-btn {
   background: #242424;
   color: #f5f1e8;
@@ -343,7 +365,9 @@
   background: rgba(180, 60, 60, 0.28);
 }
 
-/* EMPTY / LOADING */
+/* =========================
+   EMPTY / LOADING
+========================= */
 
 .menu-admin-message {
   min-height: 300px;
@@ -367,13 +391,19 @@
   color: #888;
 }
 
-/* RESPONSIVE */
+/* =========================
+   TABLET
+========================= */
 
 @media (max-width: 1100px) {
   .admin-menu-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 750px) {
   .admin-menu-page {
@@ -399,5 +429,36 @@
 
   .menu-form-row {
     grid-template-columns: 1fr;
+  }
+
+  .menu-form-box {
+    padding: 25px 20px;
+  }
+}
+
+/* =========================
+   SMALL PHONES
+========================= */
+
+@media (max-width: 480px) {
+  .admin-menu-page {
+    padding: 18px 12px;
+  }
+
+  .admin-menu-header h1 {
+    font-size: 28px;
+  }
+
+  .admin-menu-header-buttons {
+    flex-direction: column;
+  }
+
+  .back-menu-btn,
+  .add-dish-btn {
+    width: 100%;
+  }
+
+  .admin-menu-content {
+    padding: 18px;
   }
 }

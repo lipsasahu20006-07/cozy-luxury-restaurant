@@ -21,13 +21,14 @@ function AdminMenu() {
   });
 
   // Protect admin page
-  useEffect(() => {
-    const loggedIn = localStorage.getItem("adminLoggedIn");
+  // Protect admin page
+useEffect(() => {
+  const token = localStorage.getItem("adminToken");
 
-    if (loggedIn !== "true") {
-      navigate("/admin-login");
-    }
-  }, [navigate]);
+  if (!token) {
+    navigate("/admin-login");
+  }
+}, [navigate]);
 
   // Fetch menu
   const fetchMenu = async () => {
@@ -119,8 +120,9 @@ function AdminMenu() {
       const response = await fetch(url, {
         method: editingId ? "PATCH" : "POST",
         headers: {
-          "Content-Type": "application/json",
-        },
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+},
         body: JSON.stringify({
           ...formData,
           price: Number(formData.price),
@@ -162,11 +164,14 @@ function AdminMenu() {
 
     try {
       const response = await fetch(
-        `https://cozy-luxury-restaurant-1.onrender.com/api/menu/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+  `https://cozy-luxury-restaurant-1.onrender.com/api/menu/${id}`,
+  {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+    },
+  }
+);
 
       const data = await response.json();
 
