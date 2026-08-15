@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Check email connection when server starts
-transporter.verify((error, success) => {
+transporter.verify((error) => {
   if (error) {
     console.error("========== EMAIL CONFIGURATION FAILED ==========");
     console.error(error.message);
@@ -37,7 +37,10 @@ router.post("/reserve", async (req, res) => {
   console.log(req.body);
 
   try {
-    // Save reservation
+    // ===============================
+    // SAVE RESERVATION
+    // ===============================
+
     const reservation = new Reservation(req.body);
 
     console.log("Saving reservation to MongoDB...");
@@ -48,8 +51,19 @@ router.post("/reserve", async (req, res) => {
     console.log("Reservation ID:", reservation._id);
 
     // ===============================
+    // SEND SUCCESS RESPONSE FIRST
+    // ===============================
+
+    res.status(201).json({
+      message: "Reservation saved successfully!",
+      reservation,
+    });
+
+    // ===============================
     // EMAIL
     // ===============================
+    // Email is sent AFTER the customer
+    // already receives the success response.
 
     const mailOptions = {
       from: `"Local Restro Cafe" <${process.env.EMAIL_USER}>`,
@@ -174,33 +188,19 @@ router.post("/reserve", async (req, res) => {
       `,
     };
 
-    // ===============================
-    // RESPOND TO CUSTOMER FIRST
-    // ===============================
+    try {
+      console.log("========== TRYING EMAIL ==========");
+      console.log("Sending to:", reservation.email);
 
-   try {
-  console.log("========== TRYING EMAIL ==========");
-  console.log("Sending to:", reservation.email);
+      const info = await transporter.sendMail(mailOptions);
 
-  const info = await transporter.sendMail(mailOptions);
+      console.log("========== EMAIL SENT ==========");
+      console.log("Message ID:", info.messageId);
 
-  console.log("========== EMAIL SENT ==========");
-  console.log("Message ID:", info.messageId);
-
-} catch (emailError) {
-  console.error("========== EMAIL FAILED ==========");
-  console.error("Error message:", emailError.message);
-
-  return res.status(500).json({
-    message: "Reservation saved, but email could not be sent.",
-    emailError: emailError.message,
-  });
-}
-
-res.status(201).json({
-  message: "Reservation saved successfully and confirmation email sent!",
-  reservation,
-});
+    } catch (emailError) {
+      console.error("========== EMAIL FAILED ==========");
+      console.error("Error message:", emailError.message);
+    }
 
   } catch (err) {
     console.error("========== RESERVATION ERROR ==========");
@@ -208,7 +208,7 @@ res.status(201).json({
 
     if (!res.headersSent) {
       res.status(500).json({
-        message: err.message,
+        message: "Failed to save reservation.",
       });
     }
   }

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Menu = require("../models/Menu");
+const verifyAdmin = require("../middleware/authMiddleware");
 
 // GET ALL MENU ITEMS
 router.get("/menu", async (req, res) => {
@@ -22,7 +23,7 @@ router.get("/menu", async (req, res) => {
 
 
 // ADD NEW DISH
-router.post("/menu", async (req, res) => {
+router.post("/menu", verifyAdmin, async (req, res) => {
   try {
     const {
       name,
@@ -57,7 +58,7 @@ router.post("/menu", async (req, res) => {
 
 
 // UPDATE DISH
-router.patch("/menu/:id", async (req, res) => {
+router.patch("/menu/:id", verifyAdmin, async (req, res) => {
   try {
     const updatedItem = await Menu.findByIdAndUpdate(
       req.params.id,
@@ -87,7 +88,7 @@ router.patch("/menu/:id", async (req, res) => {
 
 
 // DELETE DISH
-router.delete("/menu/:id", async (req, res) => {
+router.delete("/menu/:id", verifyAdmin, async (req, res) => {
   try {
     const deletedItem = await Menu.findByIdAndDelete(
       req.params.id
