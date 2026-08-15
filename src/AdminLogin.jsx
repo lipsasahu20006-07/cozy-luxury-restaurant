@@ -18,7 +18,7 @@ function AdminLogin() {
 
   try {
     const response = await fetch(
-  "https://cozy-luxury-restaurant-1.onrender.com/api/admin/login",
+  "https://cozy-luxury-backend.onrender.com/api/admin/login",
       {
         method: "POST",
         headers: {
