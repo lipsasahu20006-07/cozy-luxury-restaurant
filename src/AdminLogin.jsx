@@ -8,44 +8,44 @@ function AdminLogin() {
 
   const navigate = useNavigate();
 
- const handleLogin = async (e) => {
-  e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  if (!email || !password) {
-    alert("Please enter your email and password.");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-  "https://cozy-luxury-backend.onrender.com/api/admin/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.message || "Invalid email or password.");
+    if (!email || !password) {
+      alert("Please enter your email and password.");
       return;
     }
 
-    localStorage.setItem("adminToken", data.token);
+    try {
+      const response = await fetch(
+        "https://cozy-luxury-restaurant-1.onrender.com/api/admin/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
 
-    navigate("/admin");
-  } catch (error) {
-    console.error("Login error:", error);
-    alert("Unable to connect to server.");
-  }
-};
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Invalid email or password.");
+        return;
+      }
+
+      localStorage.setItem("adminToken", data.token);
+
+      navigate("/admin");
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Unable to connect to server.");
+    }
+  };
 
   return (
     <div className="admin-login-page">
